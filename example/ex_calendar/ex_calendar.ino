@@ -5,6 +5,8 @@
 static const uint16_t screenWidth = 320;
 static const uint16_t screenHeight = 480;
 
+lv_obj_t *calendar;
+
 static lv_disp_draw_buf_t draw_buf;
 static lv_color_t buf[screenWidth * screenHeight / 10];
 
@@ -106,26 +108,44 @@ void setup() {
   lv_obj_set_width(ui_Label, LV_SIZE_CONTENT);   /// 1
   lv_obj_set_height(ui_Label, LV_SIZE_CONTENT);  /// 1
   lv_obj_set_x(ui_Label, 0);
-  lv_obj_set_y(ui_Label, -100);
+  lv_obj_set_y(ui_Label, -200);
   lv_obj_set_align(ui_Label, LV_ALIGN_CENTER);
   lv_label_set_text(ui_Label, "TEST LVGL");
-  lv_obj_set_style_text_color(ui_Label, lv_color_hex(0x32A852), LaV_PART_MAIN | LV_STATE_DEFAULT);
+  lv_obj_set_style_text_color(ui_Label, lv_color_hex(0x32A852), LV_PART_MAIN | LV_STATE_DEFAULT);
   lv_obj_set_style_text_opa(ui_Label, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
   lv_obj_set_style_text_font(ui_Label, &lv_font_montserrat_28, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-  // Create a bar
-  lv_obj_t *ui_Bar = lv_bar_create(lv_scr_act());
-  lv_obj_set_width(ui_Bar, 28);
-  lv_obj_set_height(ui_Bar, 103);
-  lv_obj_set_x(ui_Bar, 0);
-  lv_obj_set_y(ui_Bar, 0);
-  lv_obj_set_align(ui_Bar, LV_ALIGN_CENTER);
-  lv_obj_set_style_radius(ui_Bar, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
-  lv_obj_set_style_bg_color(ui_Bar, lv_color_hex(0x08CC9E), LV_PART_INDICATOR | LV_STATE_DEFAULT);
-  lv_bar_set_range(ui_Bar, 0, 500);
+  // Create a button calendar
+  calendar = lv_calendar_create(lv_scr_act());
+  lv_obj_set_width(calendar, 300);
+  lv_obj_set_height(calendar, 200);
+  lv_obj_set_x(calendar, 0);
+  lv_obj_set_y(calendar, 0);
+  lv_obj_set_align(calendar, LV_ALIGN_CENTER);
+  lv_obj_add_event_cb(calendar, event_handler, LV_EVENT_ALL, NULL);
 
-  lv_bar_set_value(ui_Bar, 400, LV_ANIM_ON);
+  lv_calendar_set_today_date(calendar, 2023, 11, 16);
+  lv_calendar_set_showed_date(calendar, 2023, 11);
 }
+
+static void event_handler(lv_event_t *e) {
+  lv_event_code_t code = lv_event_get_code(e);
+  lv_obj_t *obj = lv_event_get_current_target(e);
+
+  if (code == LV_EVENT_VALUE_CHANGED) {
+    lv_calendar_date_t date;
+    if (lv_calendar_get_pressed_date(obj, &date)) {
+      Serial.println("Clicked " + String(date.day) + "/" + String(date.month) + "/" + String(date.year));
+
+      static lv_calendar_date_t highlighted_days[1]; 
+      highlighted_days[0].year = date.year;
+      highlighted_days[0].month = date.month;
+      highlighted_days[0].day = date.day;
+      lv_calendar_set_highlighted_dates(calendar, highlighted_days, 1);
+    }
+  }
+}
+
 
 
 void loop() {

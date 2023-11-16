@@ -109,23 +109,36 @@ void setup() {
   lv_obj_set_y(ui_Label, -100);
   lv_obj_set_align(ui_Label, LV_ALIGN_CENTER);
   lv_label_set_text(ui_Label, "TEST LVGL");
-  lv_obj_set_style_text_color(ui_Label, lv_color_hex(0x32A852), LaV_PART_MAIN | LV_STATE_DEFAULT);
+  lv_obj_set_style_text_color(ui_Label, lv_color_hex(0x32A852), LV_PART_MAIN | LV_STATE_DEFAULT);
   lv_obj_set_style_text_opa(ui_Label, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
   lv_obj_set_style_text_font(ui_Label, &lv_font_montserrat_28, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-  // Create a bar
-  lv_obj_t *ui_Bar = lv_bar_create(lv_scr_act());
-  lv_obj_set_width(ui_Bar, 28);
-  lv_obj_set_height(ui_Bar, 103);
-  lv_obj_set_x(ui_Bar, 0);
-  lv_obj_set_y(ui_Bar, 0);
-  lv_obj_set_align(ui_Bar, LV_ALIGN_CENTER);
-  lv_obj_set_style_radius(ui_Bar, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
-  lv_obj_set_style_bg_color(ui_Bar, lv_color_hex(0x08CC9E), LV_PART_INDICATOR | LV_STATE_DEFAULT);
-  lv_bar_set_range(ui_Bar, 0, 500);
-
-  lv_bar_set_value(ui_Bar, 400, LV_ANIM_ON);
+  // Create a button matrix
+  static const char *btnm_map[] = { "1", "2", "3", "4", "5", "\n",
+                                    "6", "7", "8", "9", "0", "\n",
+                                    "ENTER", "CANCLE", "" };
+  lv_obj_t *btnm1 = lv_btnmatrix_create(lv_scr_act());
+  lv_btnmatrix_set_map(btnm1, btnm_map);
+  lv_obj_set_width(btnm1, 267);
+  lv_obj_set_height(btnm1, 139);
+  lv_obj_set_x(btnm1, 0);
+  lv_obj_set_y(btnm1, 0);
+  lv_obj_set_align(btnm1, LV_ALIGN_CENTER);
+  lv_obj_add_event_cb(btnm1, event_handler, LV_EVENT_ALL, NULL);
 }
+
+static void event_handler(lv_event_t * e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * obj = lv_event_get_target(e);
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        uint32_t id = lv_btnmatrix_get_selected_btn(obj);
+        const char * txt = lv_btnmatrix_get_btn_text(obj, id);
+
+        Serial.println(txt);
+    }
+}
+
 
 
 void loop() {

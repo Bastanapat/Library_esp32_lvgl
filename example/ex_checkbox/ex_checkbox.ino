@@ -109,22 +109,29 @@ void setup() {
   lv_obj_set_y(ui_Label, -100);
   lv_obj_set_align(ui_Label, LV_ALIGN_CENTER);
   lv_label_set_text(ui_Label, "TEST LVGL");
-  lv_obj_set_style_text_color(ui_Label, lv_color_hex(0x32A852), LaV_PART_MAIN | LV_STATE_DEFAULT);
+  lv_obj_set_style_text_color(ui_Label, lv_color_hex(0x32A852), LV_PART_MAIN | LV_STATE_DEFAULT);
   lv_obj_set_style_text_opa(ui_Label, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
   lv_obj_set_style_text_font(ui_Label, &lv_font_montserrat_28, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-  // Create a bar
-  lv_obj_t *ui_Bar = lv_bar_create(lv_scr_act());
-  lv_obj_set_width(ui_Bar, 28);
-  lv_obj_set_height(ui_Bar, 103);
-  lv_obj_set_x(ui_Bar, 0);
-  lv_obj_set_y(ui_Bar, 0);
-  lv_obj_set_align(ui_Bar, LV_ALIGN_CENTER);
-  lv_obj_set_style_radius(ui_Bar, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
-  lv_obj_set_style_bg_color(ui_Bar, lv_color_hex(0x08CC9E), LV_PART_INDICATOR | LV_STATE_DEFAULT);
-  lv_bar_set_range(ui_Bar, 0, 500);
-
-  lv_bar_set_value(ui_Bar, 400, LV_ANIM_ON);
+  // Create a button
+  lv_obj_t *ui_cb = lv_checkbox_create(lv_scr_act());
+  lv_obj_set_width(ui_cb, 102);
+  lv_obj_set_height(ui_cb, 102);
+  lv_obj_set_x(ui_cb, 0);
+  lv_obj_set_y(ui_cb, 0);
+  lv_obj_set_align(ui_cb, LV_ALIGN_CENTER);
+  lv_checkbox_set_text(ui_cb, "My Check box");
+  lv_obj_add_event_cb(ui_cb, event_handler, LV_EVENT_ALL, NULL);
+}
+static void event_handler(lv_event_t * e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * obj = lv_event_get_target(e);
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        const char * txt = lv_checkbox_get_text(obj);
+        const char * state = lv_obj_get_state(obj) & LV_STATE_CHECKED ? "Checked" : "Unchecked";
+        Serial.println(state);
+    }
 }
 
 
