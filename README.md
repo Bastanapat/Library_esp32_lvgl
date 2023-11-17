@@ -12,4 +12,4 @@
 -	ESP32_GPIO15 --> CTP_SDA
 -	ESP32_GPIO15--> CTP_SCL
 
-![Schematic](https://github.com/Bastanapat/Library_esp32_lvgl/tree/main/image/tft_320_480_esp32.drawio.png)
+![Schematic1](Schematic/tft_320_480_esp32.drawio.png)
