@@ -13,3 +13,4 @@
 -	ESP32_GPIO15--> CTP_SCL
 
 ![Schematic1](Schematic/tft_320_480_esp32.drawio.png)
+![Schematic1](Schematic/image2.png)
